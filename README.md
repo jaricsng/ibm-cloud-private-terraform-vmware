@@ -45,7 +45,7 @@ This terraform template perform the following tasks:
 1. Clone this repository: `git clone https://github.com/pjgunadi/ibm-cloud-private-terraform-vmware.git`
 2. [Download terraform](https://www.terraform.io/) if you don't have one
 3. Create terraform variable file with your input value e.g. `terraform.tfvars`
-4. Verify `createfs*.sh` in scripts directory to adjust the Logical volume size for each mount point.
+4. Verify `createfs*.sh` in `scripts` directory to adjust the Logical volume size for each mount point.
 You can find the filesystem size recommendation at [Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0/supported_system_config/hardware_reqs.html) 
 5. Apply terraform template
 ```
@@ -61,7 +61,7 @@ terraform apply
 4. Type the **GitHub Repository URL:** `https://github.com/pjgunadi/ibm-cloud-private-terraform-vmware`
 5. Type the **GitHub Repository sub-directory:** `cam`
 6. Click **Create**
-7. Set **Cloud Provider** value to `IBM`
+7. Set **Cloud Provider** value to `VMware vSphere`
 8. Save the template
 
 ## ICP Provisioning Module
