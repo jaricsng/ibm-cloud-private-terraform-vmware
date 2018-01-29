@@ -51,9 +51,10 @@ You can find the filesystem size recommendation at [Knowledge Center](https://ww
 ```
 terraform init
 terraform plan
-terraform apply
+terraform apply -auto-approve
 ```
-
+**Note:**
+You can also limit the concurrency with: `terraform apply -parallelism=x` where *x=number of concurrency*
 ## ICP Provisioning Module
 This [ICP Provisioning module](https://github.com/pjgunadi/terraform-module-icp-deploy) is forked from [IBM Cloud Architecture](https://github.com/ibm-cloud-architecture/terraform-module-icp-deploy)
 with few modifications:
