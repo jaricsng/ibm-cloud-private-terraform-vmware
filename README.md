@@ -54,16 +54,6 @@ terraform plan
 terraform apply
 ```
 
-## Deployment step from IBM Cloud Automation Manager (CAM)
-1. Login to CAM
-2. Navigate to Library > Template, and click **Create Template**
-3. Select tab **From GitHub**
-4. Type the **GitHub Repository URL:** `https://github.com/pjgunadi/ibm-cloud-private-terraform-vmware`
-5. Type the **GitHub Repository sub-directory:** `cam`
-6. Click **Create**
-7. Set **Cloud Provider** value to `VMware vSphere`
-8. Save the template
-
 ## ICP Provisioning Module
 This [ICP Provisioning module](https://github.com/pjgunadi/terraform-module-icp-deploy) is forked from [IBM Cloud Architecture](https://github.com/ibm-cloud-architecture/terraform-module-icp-deploy)
 with few modifications:

@@ -145,7 +145,7 @@ variable "worker" {
     cpu_cores   = "2"
     data_disk   = "100" // GB
     memory      = "4096"
-    ipaddresses = "192.168.66.90 192.168.66.91 192.168.66.92"
+    ipaddresses = "192.168.66.90,192.168.66.91,192.168.66.92"
     netmask     = "21"
     gateway     = "192.168.64.1"    
   }
