@@ -91,7 +91,7 @@
     "hidden": false,
     "immutable": false,
     "required": true,
-    "secured": false,
+    "secured": true,
     "type": "string"
   },
   {
