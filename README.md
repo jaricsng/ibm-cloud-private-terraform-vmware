@@ -32,8 +32,8 @@ This terraform template perform the following tasks:
 | icp_source_path | ICP Installer Source Path | /shared/icp.tar.gz |
 | icp_admin_password | ICP desired admin password | xxxxx |
 | instance_prefix | VM Instance Prefix | icp |
-| cluster_access_ip | ICP Cluster Access IP (Enterprise edition only) | *virtual ip or leave empty* |
-| proxy_access_ip | ICP Proxy Access IP (Enterprise edition only) | *virtual ip or leave empty* |
+| cluster_vip | ICP Cluster Virtual IP for HA | *virtual ip or leave empty* |
+| proxy_vip | ICP Proxy Virtual IP for HA | *virtual ip or leave empty* |
 | master | Master nodes information | *see default values in variables.tf* |
 | proxy | Proxy node information | *see default values in variables.tf* |
 | worker | Worker node information | *see default values in variables.tf* |

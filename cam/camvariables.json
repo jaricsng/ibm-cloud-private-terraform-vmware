@@ -216,7 +216,7 @@
     "type": "string"
   },
   {
-    "name": "cluster_access_ip",
+    "name": "cluster_vip",
     "label": "Cluster Access/Service IP",
     "description": "Cluster Access IP",
     "default": "",
@@ -227,7 +227,7 @@
     "type": "string"
   },
   {
-    "name": "proxy_access_ip",
+    "name": "proxy_vip",
     "label": "Proxy Access IP",
     "description": "Proxy Access/Service IP",
     "default": "",

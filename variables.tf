@@ -83,10 +83,10 @@ variable "network_cidr" {
 variable "cluster_ip_range" {
     default = "192.168.0.1/24"
 }
-variable "cluster_access_ip" {
+variable "cluster_vip" {
     default = ""
 }
-variable "proxy_access_ip" {
+variable "proxy_vip" {
     default = ""
 }
 variable "instance_prefix" {
