@@ -101,12 +101,12 @@ variable "instance_prefix" {
 variable "master" {
   type = "map"
   default = {
-    nodes       = "3"
+    nodes       = "1"
     name        = "master"
     cpu_cores   = "4"
     data_disk   = "100" // GB
     memory      = "8192"
-    ipaddresses = "192.168.66.81,192.168.66.82,192.168.66.83"
+    ipaddresses = "192.168.66.81"
     netmask     = "21"
     gateway     = "192.168.64.1"
   }
@@ -114,12 +114,12 @@ variable "master" {
 variable "proxy" {
   type = "map"
   default = {
-    nodes       = "3"
+    nodes       = "1"
     name        = "proxy"
     cpu_cores   = "2"
     data_disk   = "51" // GB
     memory      = "4096"
-    ipaddresses = "192.168.66.84,192.168.66.85,192.168.66.86"
+    ipaddresses = "192.168.66.84"
     netmask     = "21"
     gateway     = "192.168.64.1"    
   }
@@ -127,12 +127,12 @@ variable "proxy" {
 variable "management" {
   type = "map"
   default = {
-    nodes       = "3"
+    nodes       = "1"
     name        = "mgmt"
     cpu_cores   = "4"
     data_disk   = "100" // GB
     memory      = "8192"
-    ipaddresses = "192.168.66.87,192.168.66.88,192.168.66.89"
+    ipaddresses = "192.168.66.87"
     netmask     = "21"
     gateway     = "192.168.64.1"    
   }
@@ -145,7 +145,7 @@ variable "worker" {
     cpu_cores   = "2"
     data_disk   = "100" // GB
     memory      = "4096"
-    ipaddresses = "192.168.66.90,192.168.66.91,192.168.66.92"
+    ipaddresses = "192.168.66.90 192.168.66.91 192.168.66.92"
     netmask     = "21"
     gateway     = "192.168.64.1"    
   }

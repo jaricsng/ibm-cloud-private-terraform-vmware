@@ -11,8 +11,9 @@
   },  
   {
     "name": "datastore",
-    "label": "Datastore01",
+    "label": "Datastore",
     "description": "vSphere Datastore",
+    "default": "datastore01",
     "hidden": false,
     "immutable": false,
     "required": true,
@@ -174,7 +175,7 @@
     "hidden": false,
     "immutable": false,
     "required": false,
-    "secured": false,
+    "secured": true,
     "type": "string"
   },
   {
@@ -288,7 +289,7 @@
       "name": "worker",
       "label": "Worker Node",
       "description": "Worker Node Informations",
-      "default": {"nodes": "3", "name": "worker", "cpu_cores": "2", "data_disk":"100","memory":"4096","ipaddresses":"192.168.66.90,192.168.66.91,192.168.66.92","netmask":"24","gateway":"192.168.66.1" },
+      "default": {"nodes": "3", "name": "worker", "cpu_cores": "2", "data_disk":"100","memory":"4096","ipaddresses":"192.168.66.90 192.168.66.91 192.168.66.92","netmask":"24","gateway":"192.168.66.1" },
       "hidden": false,
       "immutable": false,
       "required": true,
