@@ -13,7 +13,6 @@
     "name": "datastore",
     "label": "Datastore",
     "description": "vSphere Datastore",
-    "default": "datastore01",
     "hidden": false,
     "immutable": false,
     "required": true,
