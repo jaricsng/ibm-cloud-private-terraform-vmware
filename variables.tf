@@ -86,8 +86,14 @@ variable "cluster_ip_range" {
 variable "cluster_vip" {
     default = ""
 }
+variable "cluster_vip_iface" {
+    default = "ens160"
+}
 variable "proxy_vip" {
     default = ""
+}
+variable "proxy_vip_iface" {
+    default = "ens160"
 }
 variable "instance_prefix" {
     default = "icp"

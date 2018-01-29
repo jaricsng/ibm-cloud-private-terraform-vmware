@@ -33,7 +33,9 @@ This terraform template perform the following tasks:
 | icp_admin_password | ICP desired admin password | xxxxx |
 | instance_prefix | VM Instance Prefix | icp |
 | cluster_vip | ICP Cluster Virtual IP for HA | *virtual ip or leave empty* |
+| cluster_vip_iface | ICP Cluster Virtual IP Interface | ens160 |
 | proxy_vip | ICP Proxy Virtual IP for HA | *virtual ip or leave empty* |
+| proxy_vip_iface | ICP Proxy Virtual IP Interface | ens160 |
 | master | Master nodes information | *see default values in variables.tf* |
 | proxy | Proxy node information | *see default values in variables.tf* |
 | worker | Worker node information | *see default values in variables.tf* |
@@ -43,7 +45,9 @@ This terraform template perform the following tasks:
 1. Clone this repository: `git clone https://github.com/pjgunadi/ibm-cloud-private-terraform-vmware.git`
 2. [Download terraform](https://www.terraform.io/) if you don't have one
 3. Create terraform variable file with your input value e.g. `terraform.tfvars`
-4. Apply the template
+4. Verify `createfs*.sh` in scripts directory to adjust the Logical volume size for each mount point.
+You can find the filesystem size recommendation at [Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0/supported_system_config/hardware_reqs.html) 
+5. Apply terraform template
 ```
 terraform init
 terraform plan

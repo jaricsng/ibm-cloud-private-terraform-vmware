@@ -217,8 +217,8 @@
   },
   {
     "name": "cluster_vip",
-    "label": "Cluster Access/Service IP",
-    "description": "Cluster Access IP",
+    "label": "Cluster Virtual IP",
+    "description": "Cluster Virtual IP",
     "default": "",
     "hidden": false,
     "immutable": false,
@@ -227,9 +227,20 @@
     "type": "string"
   },
   {
+    "name": "cluster_vip_iface",
+    "label": "Cluster Virtual IP Interface",
+    "description": "Cluster Virtual IP Interface Name",
+    "default": "ens160",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },
+  {
     "name": "proxy_vip",
-    "label": "Proxy Access IP",
-    "description": "Proxy Access/Service IP",
+    "label": "Proxy Virtual IP",
+    "description": "Proxy Virtual IP",
     "default": "",
     "hidden": false,
     "immutable": false,
@@ -237,6 +248,17 @@
     "secured": false,
     "type": "string"
   },  
+  {
+    "name": "proxy_vip_iface",
+    "label": "Proxy Virtual IP Interface",
+    "description": "Proxy Virtual IP Interface Name",
+    "default": "ens160",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },    
   {
     "name": "master",
     "label": "Master Node",

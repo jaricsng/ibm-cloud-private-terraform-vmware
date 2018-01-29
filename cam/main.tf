@@ -377,8 +377,10 @@ module "icpprovision" {
     "ansible_become"            = "${var.ssh_user == "root" ? false : true}"
     "default_admin_password"    = "${var.icpadmin_password}"
     "calico_ipip_enabled"       = "true"
-    "cluster_vip"         = "${var.cluster_vip == "" ? element(vsphere_virtual_machine.master.*.default_ip_address, 0) : var.cluster_vip}"
-    "proxy_vip"           = "${var.proxy_vip == "" ? element(vsphere_virtual_machine.proxy.*.default_ip_address, 0) : var.proxy_vip}"
+    "cluster_vip"     = "${var.cluster_vip == "" ? element(vsphere_virtual_machine.master.*.default_ip_address, 0) : var.cluster_vip}"
+    "vip_iface"       = "${var.cluster_vip_iface == "" ? "eth0" : var.cluster_vip_iface}"    
+    "proxy_vip"       = "${var.proxy_vip == "" ? element(vsphere_virtual_machine.proxy.*.default_ip_address, 0) : var.proxy_vip}"
+    "proxy_vip_iface" = "${var.proxy_vip_iface == "" ? "eth0" : var.proxy_vip_iface}"
   }
 
   generate_key = true
