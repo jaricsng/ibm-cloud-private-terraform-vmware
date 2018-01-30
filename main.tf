@@ -39,6 +39,10 @@ resource "tls_private_key" "ssh" {
 }
 //master
 resource "vsphere_virtual_machine" "master" {
+  lifecycle {
+    ignore_changes = ["disk.0","disk.1"]                                                                                                       
+  }
+
   count            = "${var.master["nodes"]}"
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
@@ -56,7 +60,7 @@ resource "vsphere_virtual_machine" "master" {
   }
 
   disk {
-    label             = "${format("%s-%s-%01d.vmdk", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
+    label            = "${format("%s-%s-%01d.vmdk", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
     size             = "${data.vsphere_virtual_machine.template.disks.0.size}"
     eagerly_scrub    = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
     thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
@@ -120,6 +124,10 @@ connection {
 }
 //proxy
 resource "vsphere_virtual_machine" "proxy" {
+  lifecycle {
+    ignore_changes = ["disk.0","disk.1"]                                                                                                       
+  }
+  
   count            = "${var.proxy["nodes"]}"
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
@@ -137,14 +145,14 @@ resource "vsphere_virtual_machine" "proxy" {
   }
 
   disk {
-    label             = "${format("%s-%s-%01d.vmdk", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
+    label            = "${format("%s-%s-%01d.vmdk", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
     size             = "${data.vsphere_virtual_machine.template.disks.0.size}"
     eagerly_scrub    = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
     thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
   }
 
   disk {
-    label             = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
+    label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
     size             = "${var.proxy["data_disk"]}"
     unit_number      = 1
     eagerly_scrub    = false
@@ -196,6 +204,10 @@ connection {
 }
 //management
 resource "vsphere_virtual_machine" "management" {
+  lifecycle {
+    ignore_changes = ["disk.0","disk.1"]                                                                                                       
+  }
+
   count            = "${var.management["nodes"]}"
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
@@ -213,14 +225,14 @@ resource "vsphere_virtual_machine" "management" {
   }
 
   disk {
-    label             = "${format("%s-%s-%01d.vmdk", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
+    label            = "${format("%s-%s-%01d.vmdk", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
     size             = "${data.vsphere_virtual_machine.template.disks.0.size}"
     eagerly_scrub    = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
     thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
   }
 
   disk {
-    label             = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
+    label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
     size             = "${var.management["data_disk"]}"
     unit_number      = 1
     eagerly_scrub    = false
@@ -272,6 +284,10 @@ connection {
 }
 //worker
 resource "vsphere_virtual_machine" "worker" {
+  lifecycle {
+    ignore_changes = ["disk.0","disk.1"]                                                                                                       
+  }
+
   count            = "${var.worker["nodes"]}"
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
@@ -289,14 +305,14 @@ resource "vsphere_virtual_machine" "worker" {
   }
 
   disk {
-    label             = "${format("%s-%s-%01d.vmdk", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
+    label            = "${format("%s-%s-%01d.vmdk", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
     size             = "${data.vsphere_virtual_machine.template.disks.0.size}"
     eagerly_scrub    = "${data.vsphere_virtual_machine.template.disks.0.eagerly_scrub}"
     thin_provisioned = "${data.vsphere_virtual_machine.template.disks.0.thin_provisioned}"
   }
 
   disk {
-    label             = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
+    label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
     size             = "${var.worker["data_disk"]}"
     unit_number      = 1
     eagerly_scrub    = false
@@ -366,8 +382,8 @@ module "icpprovision" {
   icp_source_password = "${var.icp_source_password}"
   image_file = "${var.icp_source_path}"
 
-  /* Workaround for terraform issue #10857
-  When this is fixed, we can work this out autmatically */
+  # Workaround for terraform issue #10857
+  # When this is fixed, we can work this out autmatically
   cluster_size  = "${var.master["nodes"] + var.worker["nodes"] + var.proxy["nodes"] + var.management["nodes"]}"
 
   icp_configuration = {
