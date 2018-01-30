@@ -42,7 +42,7 @@ resource "vsphere_virtual_machine" "master" {
   count            = "${var.master["nodes"]}"
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
-  datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (replace(element(split(":",replace(timestamp(),"Z","")),2),"0","3") + index(var.vm_types, "master") + count.index ) % length(var.datastore))}"
+  datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (index(var.vm_types, "master") + count.index ) % length(var.datastore))}"
 
   num_cpus = "${var.master["cpu_cores"]}"
   memory   = "${var.master["memory"]}"
@@ -123,7 +123,7 @@ resource "vsphere_virtual_machine" "proxy" {
   count            = "${var.proxy["nodes"]}"
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
-  datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (replace(element(split(":",replace(timestamp(),"Z","")),2),"0","3") + index(var.vm_types, "proxy") + count.index ) % length(var.datastore))}"
+  datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (index(var.vm_types, "proxy") + count.index ) % length(var.datastore))}"
 
   num_cpus = "${var.proxy["cpu_cores"]}"
   memory   = "${var.proxy["memory"]}"
@@ -199,7 +199,7 @@ resource "vsphere_virtual_machine" "management" {
   count            = "${var.management["nodes"]}"
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
-  datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (replace(element(split(":",replace(timestamp(),"Z","")),2),"0","3") + index(var.vm_types, "management") + count.index ) % length(var.datastore))}"
+  datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (index(var.vm_types, "management") + count.index ) % length(var.datastore))}"
 
   num_cpus = "${var.management["cpu_cores"]}"
   memory   = "${var.management["memory"]}"
@@ -275,7 +275,7 @@ resource "vsphere_virtual_machine" "worker" {
   count            = "${var.worker["nodes"]}"
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
-  datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (replace(element(split(":",replace(timestamp(),"Z","")),2),"0","3") + index(var.vm_types, "worker") + count.index ) % length(var.datastore))}"
+  datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (index(var.vm_types, "worker") + count.index ) % length(var.datastore))}"
 
   num_cpus = "${var.worker["cpu_cores"]}"
   memory   = "${var.worker["memory"]}"
@@ -377,6 +377,9 @@ module "icpprovision" {
     "ansible_become"            = "${var.ssh_user == "root" ? false : true}"
     "default_admin_password"    = "${var.icpadmin_password}"
     "calico_ipip_enabled"       = "true"
+    "kibana_install"            = "true"
+    "docker_log_max_size"       = "10m"
+    "docker_log_max_file"       = "10"
     "cluster_vip"     = "${var.cluster_vip == "" ? element(vsphere_virtual_machine.master.*.default_ip_address, 0) : var.cluster_vip}"
     "vip_iface"       = "${var.cluster_vip_iface == "" ? "eth0" : var.cluster_vip_iface}"    
     "proxy_vip"       = "${var.proxy_vip == "" ? element(vsphere_virtual_machine.proxy.*.default_ip_address, 0) : var.proxy_vip}"

@@ -103,7 +103,7 @@ variable "master" {
   default = {
     nodes       = "1"
     name        = "master"
-    cpu_cores   = "4"
+    cpu_cores   = "8"
     data_disk   = "100" // GB
     memory      = "8192"
     ipaddresses = "192.168.66.81"
@@ -116,7 +116,7 @@ variable "proxy" {
   default = {
     nodes       = "1"
     name        = "proxy"
-    cpu_cores   = "2"
+    cpu_cores   = "4"
     data_disk   = "51" // GB
     memory      = "4096"
     ipaddresses = "192.168.66.84"
@@ -129,7 +129,7 @@ variable "management" {
   default = {
     nodes       = "1"
     name        = "mgmt"
-    cpu_cores   = "4"
+    cpu_cores   = "8"
     data_disk   = "100" // GB
     memory      = "8192"
     ipaddresses = "192.168.66.87"
@@ -142,9 +142,9 @@ variable "worker" {
   default = {
     nodes       = "3"
     name        = "worker"
-    cpu_cores   = "2"
+    cpu_cores   = "8"
     data_disk   = "100" // GB
-    memory      = "4096"
+    memory      = "8192"
     ipaddresses = "192.168.66.90,192.168.66.91,192.168.66.92"
     netmask     = "21"
     gateway     = "192.168.64.1"    
