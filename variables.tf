@@ -98,6 +98,9 @@ variable "proxy_vip_iface" {
 variable "instance_prefix" {
     default = "icp"
 }
+variable "cluster_name" {
+    default = "mycluster"
+}
 variable "master" {
   type = "map"
   default = {

@@ -364,7 +364,7 @@ connection {
 }
 //spawn ICP Installation
 module "icpprovision" {
-  source = "github.com/pjgunadi/terraform-module-icp-deploy"
+  source = "github.com/pjgunadi/terraform-module-icp-deploy/tree/test"
   //Connection IPs
   icp-ips = "${concat(vsphere_virtual_machine.master.*.default_ip_address, vsphere_virtual_machine.proxy.*.default_ip_address, vsphere_virtual_machine.management.*.default_ip_address, vsphere_virtual_machine.worker.*.default_ip_address)}"
   boot-node = "${element(vsphere_virtual_machine.master.*.default_ip_address, 0)}"
@@ -387,6 +387,7 @@ module "icpprovision" {
   cluster_size  = "${var.master["nodes"] + var.worker["nodes"] + var.proxy["nodes"] + var.management["nodes"]}"
 
   icp_configuration = {
+    "cluster_name"              = "${var.cluster_name}"
     "network_cidr"              = "${var.network_cidr}"
     "service_cluster_ip_range"  = "${var.cluster_ip_range}"
     "ansible_user"              = "${var.ssh_user}"
