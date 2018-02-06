@@ -55,6 +55,28 @@ terraform apply -auto-approve
 ```
 **Note:**
 You can also limit the concurrency with: `terraform apply -parallelism=x` where *x=number of concurrency*
+## Add/Remove Worker Nodes
+1. Update existing deployed terraform variable e.g. `terraform.tfvars`
+...Update the `nodes` and `ipaddresses` under the `worker` map variable. Example:
+```
+worker = {
+    nodes       = "4"
+    name        = "worker"
+    cpu_cores   = "8"
+    data_disk   = "100" // GB
+    kubelet_lv  = "10"
+    docker_lv   = "70"
+    memory      = "8192"
+    ipaddresses = "192.168.xx.90,192.168.xx.91,192.168.xx.92,192.168.xx.93"
+    netmask     = "24"
+    gateway     = "192.168.xx.1"
+}
+```
+2. Re-apply terraform template:
+```
+terraform plan
+terraform apply -auto-approve
+```
 ## ICP Provisioning Module
 This [ICP Provisioning module](https://github.com/pjgunadi/terraform-module-icp-deploy) is forked from [IBM Cloud Architecture](https://github.com/ibm-cloud-architecture/terraform-module-icp-deploy)
 with few modifications:
