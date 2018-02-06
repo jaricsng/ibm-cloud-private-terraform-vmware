@@ -56,8 +56,8 @@ terraform apply -auto-approve
 **Note:**
 You can also limit the concurrency with: `terraform apply -parallelism=x` where *x=number of concurrency*
 ## Add/Remove Worker Nodes
-1. Update existing deployed terraform variable e.g. `terraform.tfvars`
-...Update the `nodes` and `ipaddresses` under the `worker` map variable. Example:
+1. Edit existing deployed terraform variable e.g. `terraform.tfvars`
+2. Increase/decrease the `nodes` and add/remove `ipaddresses` under the `worker` map variable. Example:
 ```
 worker = {
     nodes       = "4"
