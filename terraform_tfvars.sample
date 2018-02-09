@@ -1,0 +1,86 @@
+vsphere_user="<vsphere-login-user>"
+vsphere_password="<vsphere-login-password>"
+vsphere_server="<vsphere-server-ipaddress>"
+datacenter="<vsphere-datacenter-name>"
+datastore=["<datastore1>", "<datastore2>", "<datastore3>"]
+resource_pool="<cluster-name>/Resources"
+network="VM Network"                            #Replace with your Virtua Switch
+template = {                                    #VM Template list in vSphere:
+    "redhat"="rhel74_base"                      #Template value use key/value pair: "<key>"="<template-name-in-vsphere>"
+    "ubuntu"="ubuntu1604_base"
+}
+osfamily="ubuntu"                               #Selected template key
+ssh_user="ubuntu-user"                          #Login user in selected template
+ssh_password="your-password"                    #Login password in selected template
+vm_domain="domain.local"                        #OS Domain
+dns_list = ["x.x.x.x"]                          #DNS Servers
+timezone = "Asia/Singapore"                     #OS Time Zone
+icp_version="2.1.0.1-ee"                        #ICP Version #Community: 2.1.0.1 #Enterprise: 2.1.0.1-ee
+#icp_source_server="x.x.x.x"                    #SFTP Server for Enterprise Edition
+#icp_source_user="ftp-user"                     #SFTP Login user
+#icp_source_password="ftp-password"             #SFTP Login password
+#icp_source_path="path-to-icp-enterprise-file"  #Download file location in SFTP server
+#cluster_vip="x.x.x.x"                          #ICP Cluster Virtual IP for HA Deployment (Enterprise edition)
+cluster_vip_iface="ens160"                      #ICP Cluster Virtual IP Interface name for HA. #Ubuntu: ens160 #RHEL: ens192 #Default: eth0
+#proxy_vip="192.168.66.94"                      #ICP Proxy Virtual IP for HA Deployment (Enterprise edition)
+proxy_vip_iface="ens160"                        #ICP Proxy Virtual IP Interface name for HA. #Ubuntu: ens160 #RHEL: ens192 #Default: eth0
+cluster_name="mycluster"                        #ICP Cluster Name
+instance_prefix="icp"                           #VM Instance name prefix
+#install_gluster=true                           #Option to install GlusterFS
+master= {                                       #VM Specification for ICP Master node
+    nodes       = "1"
+    name        = "master"
+    cpu_cores   = "8"
+    kubelet_lv  = "10"                          #Kubelet Volume size
+    docker_lv   = "70"                          #Docker Volume size
+    etcd_lv     = "4"                           #Etcd Volume size
+    registry_lv = "15"                          #Registry Volume size
+    memory      = "12288"
+    ipaddresses = "192.168.1.81"                #Comma separated IP Addressed for more than one node
+    netmask     = "24"
+    gateway     = "192.168.1.1"
+}
+proxy = {
+    nodes       = "1"
+    name        = "proxy"
+    cpu_cores   = "4"
+    kubelet_lv  = "10"
+    docker_lv   = "39"
+    memory      = "4096"
+    ipaddresses = "192.168.1.84"                #Comma separated IP Addressed for more than one node
+    netmask     = "24"
+    gateway     = "192.168.1.1"    
+}
+management = {
+    nodes       = "1"
+    name        = "mgmt"
+    cpu_cores   = "8"
+    kubelet_lv  = "10"
+    docker_lv   = "40"
+    management_lv = "49"                        #Management Volume size
+    memory      = "8192"
+    ipaddresses = "192.168.1.87"                #Comma separated IP Addressed for more than one node
+    netmask     = "24"
+    gateway     = "192.168.1.1"    
+}  
+worker = {
+    nodes       = "3"
+    name        = "worker"
+    cpu_cores   = "8"
+    kubelet_lv  = "10"
+    docker_lv   = "89"
+    memory      = "8192"
+    ipaddresses = "192.168.1.90,192.168.1.91,192.168.1.92"   #Comma separated IP Addressed for more than one node
+    netmask     = "24"
+    gateway     = "192.168.1.1"
+}
+gluster= {
+    nodes       = "3"
+    name        = "gluster"
+    cpu_cores   = "2"
+    data_disk   = "100" // GB                               #Data disk for Gluster
+    memory      = "2048"
+    ipaddresses = "192.168.1.95,192.168.1.96,192.168.1.97"  #Comma separated IP Addressed for more than one node
+    netmask     = "24"
+    gateway     = "192.168.1.1"
+}

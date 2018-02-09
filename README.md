@@ -6,55 +6,37 @@ Install your VMware cluster environment
 ## Summary
 This terraform template perform the following tasks:
 - Provision IBM Cloud Private VMs in VMWare Cluster
-- [Call ICP Provisioning Module](https://github.com/pjgunadi/terraform-module-icp-deploy)
+- [Provision ICP and GlusterFS from external module](https://github.com/pjgunadi/terraform-module-icp-deploy)
 
-## Input
-| Variable      | Description    | Sample Value |
-| ------------- | -------------- | ------------ |
-| vsphere_server| vCenter Server | 192.168.1.1  |
-| vsphere_user  | vCenter User   | admin |
-| vsphere_password | vCenter Password | xxxxx |
-| datacenter | vSphere Datacenter Name | dc01 |
-| datastore | vSphere Datastore | datastore01 |
-| resource_pool | vSphere Cluster Resource Pool | cluster1/Resources |
-| network | vSphere Cluster Network | VM Network |
-| osfamily | Operating System | ubuntu |
-| template | Image Template | ubuntu_base_image |
-| ssh_user | Login user to Image Template | admin |
-| ssh_password | Login password to ICP Template | xxxxx |
-| vm_domain | Server Domain | domain.com |
-| timezone | Timezone | Asia/Singapore |
-| dns_list | DNS List | ["192.168.1.53","192.168.1.54"] |
-| icp_version | ICP Version | 2.1.0.1 |
-| icp_source_server | ICP Installer sFTP Server | 192.168.1.5 |
-| icp_source_user | ICP Installer sFTP User | user |
-| icp_source_pasword | ICP Installer sFTP Password | xxxxx |
-| icp_source_path | ICP Installer Source Path | /shared/icp.tar.gz |
-| icp_admin_password | ICP desired admin password | xxxxx |
-| instance_prefix | VM Instance Prefix | icp |
-| cluster_vip | ICP Cluster Virtual IP for HA | *virtual ip or leave empty* |
-| cluster_vip_iface | ICP Cluster Virtual IP Interface | ens160 |
-| proxy_vip | ICP Proxy Virtual IP for HA | *virtual ip or leave empty* |
-| proxy_vip_iface | ICP Proxy Virtual IP Interface | ens160 |
-| master | Master nodes information | *see default values in variables.tf* |
-| proxy | Proxy node information | *see default values in variables.tf* |
-| worker | Worker node information | *see default values in variables.tf* |
-| management | Management node information | *see default values in variables.tf* |
+### Prerequsite - vSphere Preparation
+Before deploying ICP in your vSphere Cluster environment, verify the following checklist:
+1. Ensure you have a valid username and password to access vCenter
+2. For ICP Enterprise edition, download the ICP installer from IBM Passport Advantage and save it in a local SFTP Server
+3. Internet connection to download ICP (Community Edition) and OS package dependencies
+4. Create Linux VM template with the [supported OS](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0/supported_system_config/supported_os.html) of your choice (Ubuntu/RHEL).  
+5. The VM template should have:
+- minimum disk size of 20GB
+- configured with Ubuntu package manager or Red Hat subscription manager. If there is no internet connection, ensure that the VM template has all the pre-requisites pre-installed as defined in [Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0)
 
 ## Deployment step from Terraform CLI
 1. Clone this repository: `git clone https://github.com/pjgunadi/ibm-cloud-private-terraform-vmware.git`
 2. [Download terraform](https://www.terraform.io/) if you don't have one
-3. Create terraform variable file with your input value e.g. `terraform.tfvars`
-4. Verify `createfs*.sh` in `scripts` directory to adjust the Logical volume size for each mount point.
-You can find the filesystem size recommendation at [Knowledge Center](https://www.ibm.com/support/knowledgecenter/en/SSBS6K_2.1.0/supported_system_config/hardware_reqs.html) 
-5. Apply terraform template
+3. Rename [terraform_tfvars.sample](terraform_tfvars.sample) file as `terraform.tfvars` and update the input values as needed. 
+4. Initialize Terraform
 ```
 terraform init
+```
+5. Review Terraform plan
+```
 terraform plan
-terraform apply -auto-approve
+```
+6. Apply Terraform template
+```
+terraform apply
 ```
 **Note:**
 You can also limit the concurrency with: `terraform apply -parallelism=x` where *x=number of concurrency*
+
 ## Add/Remove Worker Nodes
 1. Edit existing deployed terraform variable e.g. `terraform.tfvars`
 2. Increase/decrease the `nodes` and add/remove `ipaddresses` under the `worker` map variable. Example:
@@ -63,22 +45,20 @@ worker = {
     nodes       = "4"
     name        = "worker"
     cpu_cores   = "8"
-    data_disk   = "100" // GB
+    kubelet_lv  = "10"
+    docker_lv   = "90"
     memory      = "8192"
-    ipaddresses = "192.168.xx.90,192.168.xx.91,192.168.xx.92,192.168.xx.93"
+    ipaddresses = "192.168.1.90,192.168.1.91,192.168.1.92,192.168.1.93"
     netmask     = "24"
-    gateway     = "192.168.xx.1"
+    gateway     = "192.168.1.1"
 }
 ```
+**Note:** The data disk size is the sume of LV variables + 1 (e.g kubelet_lv + docker_lv + 1).  
 2. Re-apply terraform template:
 ```
 terraform plan
 terraform apply -auto-approve
 ```
-## ICP Provisioning Module
-This [ICP Provisioning module](https://github.com/pjgunadi/terraform-module-icp-deploy) is forked from [IBM Cloud Architecture](https://github.com/ibm-cloud-architecture/terraform-module-icp-deploy)
-with few modifications:
-- Added Management nodes section
-- Separate Local IP and Public IP variables
-- Added boot-node IP variable
+## ICP and Gluster Provisioning Module
+The ICP and GlusterFS Installation is performed by [ICP Provisioning module](https://github.com/pjgunadi/terraform-module-icp-deploy) 
 

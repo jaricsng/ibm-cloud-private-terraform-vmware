@@ -54,7 +54,7 @@ variable dns_list {
 variable vm_types {
     description = "VM Type List"
     type = "list"
-    default = ["master","proxy","management","worker"]
+    default = ["master","proxy","management","worker","gluster"]
 }
 ##### ICP Instance details ######
 variable "icp_version" {
@@ -98,6 +98,9 @@ variable "proxy_vip_iface" {
 variable "instance_prefix" {
     default = "icp"
 }
+variable install_gluster {
+    default = false
+}
 variable "cluster_name" {
     default = "mycluster"
 }
@@ -107,11 +110,14 @@ variable "master" {
     nodes       = "1"
     name        = "master"
     cpu_cores   = "8"
-    data_disk   = "100" // GB
+    kubelet_lv  = "10"
+    docker_lv   = "70"
+    etcd_lv     = "4"
+    registry_lv = "20"
     memory      = "8192"
-    ipaddresses = "192.168.66.81"
-    netmask     = "21"
-    gateway     = "192.168.64.1"
+    ipaddresses = "192.168.1.81"
+    netmask     = "24"
+    gateway     = "192.168.1.1"
   }
 }
 variable "proxy" {
@@ -120,11 +126,12 @@ variable "proxy" {
     nodes       = "1"
     name        = "proxy"
     cpu_cores   = "4"
-    data_disk   = "51" // GB
+    kubelet_lv  = "10"
+    docker_lv   = "40"
     memory      = "4096"
-    ipaddresses = "192.168.66.84"
-    netmask     = "21"
-    gateway     = "192.168.64.1"    
+    ipaddresses = "192.168.1.84"
+    netmask     = "24"
+    gateway     = "192.168.1.1"    
   }
 }
 variable "management" {
@@ -133,11 +140,13 @@ variable "management" {
     nodes       = "1"
     name        = "mgmt"
     cpu_cores   = "8"
-    data_disk   = "100" // GB
+    kubelet_lv  = "10"
+    docker_lv   = "40"
+    management_lv = "50"
     memory      = "8192"
-    ipaddresses = "192.168.66.87"
-    netmask     = "21"
-    gateway     = "192.168.64.1"    
+    ipaddresses = "192.168.1.87"
+    netmask     = "24"
+    gateway     = "192.168.1.1"    
   }
 }
 variable "worker" {
@@ -146,10 +155,24 @@ variable "worker" {
     nodes       = "3"
     name        = "worker"
     cpu_cores   = "8"
-    data_disk   = "100" // GB
+    kubelet_lv  = "10"
+    docker_lv   = "70"
     memory      = "8192"
-    ipaddresses = "192.168.66.90,192.168.66.91,192.168.66.92"
-    netmask     = "21"
-    gateway     = "192.168.64.1"    
+    ipaddresses = "192.168.1.90,192.168.1.91,192.168.1.92"
+    netmask     = "24"
+    gateway     = "192.168.1.1"    
+  }
+}
+variable "gluster" {
+  type = "map"
+  default = {
+    nodes       = "0"
+    name        = "gluster"
+    cpu_cores   = "2"
+    data_disk   = "100" // GB
+    memory      = "2048"
+    ipaddresses = "192.168.1.95,192.168.1.96,192.168.1.97"
+    netmask     = "24"
+    gateway     = "192.168.1.1"
   }
 }
