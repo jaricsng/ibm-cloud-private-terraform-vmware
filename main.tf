@@ -45,6 +45,7 @@ data "template_file" "createfs_master" {
     docker_lv = "${var.master["docker_lv"]}"
     etcd_lv = "${var.master["etcd_lv"]}"
     registry_lv = "${var.master["registry_lv"]}"
+    management_lv = "${var.master["management_lv"]}"
   }
 }
 data "template_file" "createfs_proxy" {
@@ -100,7 +101,7 @@ resource "vsphere_virtual_machine" "master" {
 
   disk {
     label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
-    size             = "${var.master["kubelet_lv"] + var.master["docker_lv"] + var.master["registry_lv"] + var.master["etcd_lv"] + 1}"
+    size             = "${var.master["kubelet_lv"] + var.master["docker_lv"] + var.master["registry_lv"] + var.master["etcd_lv"] + var.master["management_lv"] + 1}"
     unit_number      = 1
     eagerly_scrub    = false
     thin_provisioned = false
