@@ -39,7 +39,7 @@ resource "tls_private_key" "ssh" {
 }
 //Script template
 data "template_file" "createfs_master" {
-  template = "${file("${path.module}/scripts/createfs_master.sh.tpl")}"
+  template = "${file("${path.module}/lib/templates/createfs_master.sh.tpl")}"
   vars {
     kubelet_lv = "${var.master["kubelet_lv"]}"
     docker_lv = "${var.master["docker_lv"]}"
@@ -49,14 +49,14 @@ data "template_file" "createfs_master" {
   }
 }
 data "template_file" "createfs_proxy" {
-  template = "${file("${path.module}/scripts/createfs_proxy.sh.tpl")}"
+  template = "${file("${path.module}/lib/templates/createfs_proxy.sh.tpl")}"
   vars {
     kubelet_lv = "${var.proxy["kubelet_lv"]}"
     docker_lv = "${var.proxy["docker_lv"]}"
   }
 }
 data "template_file" "createfs_management" {
-  template = "${file("${path.module}/scripts/createfs_management.sh.tpl")}"
+  template = "${file("${path.module}/lib/templates/createfs_management.sh.tpl")}"
   vars {
     kubelet_lv = "${var.management["kubelet_lv"]}"
     docker_lv = "${var.management["docker_lv"]}"
@@ -64,7 +64,7 @@ data "template_file" "createfs_management" {
   }
 }
 data "template_file" "createfs_worker" {
-  template = "${file("${path.module}/scripts/createfs_worker.sh.tpl")}"
+  template = "${file("${path.module}/lib/templates/createfs_worker.sh.tpl")}"
   vars {
     kubelet_lv = "${var.worker["kubelet_lv"]}"
     docker_lv = "${var.worker["docker_lv"]}"
@@ -78,7 +78,7 @@ locals {
 //master
 resource "vsphere_virtual_machine" "master" {
   lifecycle {
-    ignore_changes = ["disk.0","disk.1"]                                                                                                       
+    ignore_changes = ["disk.0","disk.1","disk.2"]                                                                                                       
   }
 
   #count            = "${var.master["nodes"]}"
@@ -107,8 +107,17 @@ resource "vsphere_virtual_machine" "master" {
 
   disk {
     label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
-    size             = "${var.master["kubelet_lv"] + var.master["docker_lv"] + var.master["registry_lv"] + var.master["etcd_lv"] + var.master["management_lv"] + 1}"
+    #size             = "${var.master["kubelet_lv"] + var.master["docker_lv"] + var.master["registry_lv"] + var.master["etcd_lv"] + var.master["management_lv"] + 1}"
+    size             = "${var.master["kubelet_lv"] + var.master["registry_lv"] + var.master["etcd_lv"] + var.master["management_lv"] + 1}"
     unit_number      = 1
+    eagerly_scrub    = false
+    thin_provisioned = false
+  }
+
+  disk {
+    label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
+    size             = "${var.master["docker_lv"]}"
+    unit_number      = 2
     eagerly_scrub    = false
     thin_provisioned = false
   }
@@ -149,6 +158,11 @@ connection {
     destination = "/tmp/createfs.sh"
   }
 
+  provisioner "file" {
+    source = "${path.module}/lib/scripts/"
+    destination = "/tmp/"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "echo ${var.ssh_password} | sudo -S echo",
@@ -157,14 +171,16 @@ connection {
       "[ ! -d $HOME/.ssh ] && mkdir $HOME/.ssh && chmod 700 $HOME/.ssh",
       "echo \"${tls_private_key.ssh.public_key_openssh}\" | tee -a $HOME/.ssh/authorized_keys && chmod 600 $HOME/.ssh/authorized_keys",
       "[ -f ~/id_rsa ] && mv ~/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa",
-      "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh"
+      "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh",
+      "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
+      "chmod +x /tmp/disable_ssh_password.sh; sudo /tmp/disable_ssh_password.sh"
     ]
   }
 }
 //proxy
 resource "vsphere_virtual_machine" "proxy" {
   lifecycle {
-    ignore_changes = ["disk.0","disk.1"]                                                                                                       
+    ignore_changes = ["disk.0","disk.1","disk.2"]                                                                                                       
   }
   
   #count            = "${var.proxy["nodes"]}"
@@ -193,8 +209,17 @@ resource "vsphere_virtual_machine" "proxy" {
 
   disk {
     label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
-    size             = "${var.proxy["kubelet_lv"] + var.proxy["docker_lv"] + 1}"
+    #size             = "${var.proxy["kubelet_lv"] + var.proxy["docker_lv"] + 1}"
+    size             = "${var.proxy["kubelet_lv"] + 1}"
     unit_number      = 1
+    eagerly_scrub    = false
+    thin_provisioned = false
+  }
+
+  disk {
+    label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
+    size             = "${var.proxy["docker_lv"]}"
+    unit_number      = 2
     eagerly_scrub    = false
     thin_provisioned = false
   }
@@ -230,6 +255,11 @@ connection {
     destination = "/tmp/createfs.sh"
   }
 
+  provisioner "file" {
+    source = "${path.module}/lib/scripts/"
+    destination = "/tmp/"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "echo ${var.ssh_password} | sudo -S echo",
@@ -238,14 +268,16 @@ connection {
       "[ ! -d $HOME/.ssh ] && mkdir $HOME/.ssh && chmod 700 $HOME/.ssh",
       "echo \"${tls_private_key.ssh.public_key_openssh}\" | tee -a $HOME/.ssh/authorized_keys && chmod 600 $HOME/.ssh/authorized_keys",
       "[ -f ~/id_rsa ] && mv ~/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa",
-      "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh"
+      "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh",
+      "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
+      "chmod +x /tmp/disable_ssh_password.sh; sudo /tmp/disable_ssh_password.sh"
     ]
   }
 }
 //management
 resource "vsphere_virtual_machine" "management" {
   lifecycle {
-    ignore_changes = ["disk.0","disk.1"]                                                                                                       
+    ignore_changes = ["disk.0","disk.1","disk.2"]                                                                                                       
   }
 
   #count            = "${var.management["nodes"]}"
@@ -274,8 +306,17 @@ resource "vsphere_virtual_machine" "management" {
 
   disk {
     label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
-    size             = "${var.management["kubelet_lv"] + var.management["docker_lv"] + var.management["management_lv"] + 1}"
+    #size             = "${var.management["kubelet_lv"] + var.management["docker_lv"] + var.management["management_lv"] + 1}"
+    size             = "${var.management["kubelet_lv"] + var.management["management_lv"] + 1}"
     unit_number      = 1
+    eagerly_scrub    = false
+    thin_provisioned = false
+  }
+
+  disk {
+    label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
+    size             = "${var.management["docker_lv"]}"
+    unit_number      = 2
     eagerly_scrub    = false
     thin_provisioned = false
   }
@@ -311,7 +352,12 @@ connection {
     destination = "/tmp/createfs.sh"
   }
 
-  provisioner "remote-exec" {
+  provisioner "file" {
+    source = "${path.module}/lib/scripts/"
+    destination = "/tmp/"
+  }
+
+provisioner "remote-exec" {
     inline = [
       "echo ${var.ssh_password} | sudo -S echo",
       "echo \"${var.ssh_user} ALL=(ALL) NOPASSWD:ALL\" | sudo tee /etc/sudoers.d/${var.ssh_user}",
@@ -319,14 +365,16 @@ connection {
       "[ ! -d $HOME/.ssh ] && mkdir $HOME/.ssh && chmod 700 $HOME/.ssh",
       "echo \"${tls_private_key.ssh.public_key_openssh}\" | tee -a $HOME/.ssh/authorized_keys && chmod 600 $HOME/.ssh/authorized_keys",
       "[ -f ~/id_rsa ] && mv ~/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa",
-      "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh"
+      "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh",
+      "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
+      "chmod +x /tmp/disable_ssh_password.sh; sudo /tmp/disable_ssh_password.sh"
     ]
   }
 }
 //worker
 resource "vsphere_virtual_machine" "worker" {
   lifecycle {
-    ignore_changes = ["disk.0","disk.1"]                                                                                                       
+    ignore_changes = ["disk.0","disk.1","disk.2"]                                                                                                       
   }
 
   #count            = "${var.worker["nodes"]}"
@@ -355,8 +403,17 @@ resource "vsphere_virtual_machine" "worker" {
 
   disk {
     label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
-    size             = "${var.worker["kubelet_lv"] + var.worker["docker_lv"] + 1}"
+    #size             = "${var.worker["kubelet_lv"] + var.worker["docker_lv"] + 1}"
+    size             = "${var.worker["kubelet_lv"] + 1}"
     unit_number      = 1
+    eagerly_scrub    = false
+    thin_provisioned = false
+  }
+
+  disk {
+    label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
+    size             = "${var.worker["docker_lv"]}"
+    unit_number      = 2
     eagerly_scrub    = false
     thin_provisioned = false
   }
@@ -392,6 +449,11 @@ connection {
     destination = "/tmp/createfs.sh"
   }
 
+  provisioner "file" {
+    source = "${path.module}/lib/scripts/"
+    destination = "/tmp/"
+  }
+
   provisioner "remote-exec" {
     inline = [
       "echo ${var.ssh_password} | sudo -S echo",
@@ -400,17 +462,19 @@ connection {
       "[ ! -d $HOME/.ssh ] && mkdir $HOME/.ssh && chmod 700 $HOME/.ssh",
       "echo \"${tls_private_key.ssh.public_key_openssh}\" | tee -a $HOME/.ssh/authorized_keys && chmod 600 $HOME/.ssh/authorized_keys",
       "[ -f ~/id_rsa ] && mv ~/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa",
-      "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh"
+      "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh",
+      "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
+      "chmod +x /tmp/disable_ssh_password.sh; sudo /tmp/disable_ssh_password.sh"
     ]
   }
 
   provisioner "local-exec" {
     when    = "destroy"
-    command = "scp -i ${var.vm_private_key_file} ${local.ssh_options} ${path.module}/scripts/delete_worker.sh ${var.ssh_user}@${local.icp_boot_node_ip}:/tmp/delete_worker.sh"
+    command = "scp -i ${var.vm_private_key_file} ${local.ssh_options} ${path.module}/lib/boot-scripts/delete_worker.sh ${var.ssh_user}@${local.icp_boot_node_ip}:/tmp/delete_worker.sh"
   }
   provisioner "local-exec" {
     when    = "destroy"
-    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_worker.sh; /tmp/delete_worker.sh ${var.icp_version} ${self.default_ip_address}\""
+    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_worker.sh; /tmp/delete_worker.sh ${var.icp_version} ${self.default_ip_address}\"; echo done"
   }
 }
 //gluster
@@ -490,7 +554,7 @@ resource "vsphere_virtual_machine" "gluster" {
 }
 //spawn ICP Installation
 module "icpprovision" {
-  source = "github.com/pjgunadi/terraform-module-icp-deploy"
+  source = "github.com/pjgunadi/terraform-module-icp-deploy?ref=test"
   //Connection IPs
   icp-ips = "${concat(vsphere_virtual_machine.master.*.default_ip_address, vsphere_virtual_machine.proxy.*.default_ip_address, vsphere_virtual_machine.management.*.default_ip_address, vsphere_virtual_machine.worker.*.default_ip_address)}"
   boot-node = "${element(vsphere_virtual_machine.master.*.default_ip_address, 0)}"

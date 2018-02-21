@@ -9,7 +9,11 @@ template = {                                    #VM Template list in vSphere:
     "redhat"="rhel74_base"                      #Template value use key/value pair: "<key>"="<template-name-in-vsphere>"
     "ubuntu"="ubuntu1604_base"
 }
-osfamily="ubuntu"                               #Selected template key
+storage_driver = {                              #Docker Storage Driver. Keep the default value: redhat: devicemapper, ubuntu: overlay2
+    "redhat"="devicemapper"                      
+    "ubuntu"="overlay2"
+}
+osfamily="ubuntu"                               #Use for lookup template and storage driver: possible value: ubuntu, redhat
 ssh_user="ubuntu-user"                          #Login user in selected template
 ssh_password="your-password"                    #Login password in selected template
 vm_domain="domain.local"                        #OS Domain

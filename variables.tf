@@ -34,6 +34,14 @@ variable template {
         "ubuntu"="ubuntu1604_base"
     }
 }
+variable storage_driver {
+    description = "Docker Storage Driver"
+    type = "map"
+    default = {
+        "redhat"="devicemapper"
+        "ubuntu"="overlay2"
+    }
+}
 variable ssh_user {
     description = "VM Username"
 }
