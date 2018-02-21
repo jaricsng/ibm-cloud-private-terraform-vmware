@@ -34,7 +34,7 @@ resource "tls_private_key" "ssh" {
   algorithm = "RSA"
 
   provisioner "local-exec" {
-    command = "cat > vmware-key <<EOL\n${tls_private_key.ssh.private_key_pem}\nEOL"
+    command = "cat > ${var.vm_private_key_file} <<EOL\n${tls_private_key.ssh.private_key_pem}\nEOL"
   }
 }
 //Script template
@@ -70,13 +70,19 @@ data "template_file" "createfs_worker" {
     docker_lv = "${var.worker["docker_lv"]}"
   }
 }
+//locals
+locals {
+  icp_boot_node_ip = "${vsphere_virtual_machine.master.0.default_ip_address}"
+  ssh_options = "-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+}
 //master
 resource "vsphere_virtual_machine" "master" {
   lifecycle {
     ignore_changes = ["disk.0","disk.1"]                                                                                                       
   }
 
-  count            = "${var.master["nodes"]}"
+  #count            = "${var.master["nodes"]}"
+  count            = "${trimspace(var.master["ipaddresses"]) == "" ? 0 : length(split(",",var.master["ipaddresses"]))}"  
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
   datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (index(var.vm_types, "master") + count.index ) % length(var.datastore))}"
@@ -161,7 +167,8 @@ resource "vsphere_virtual_machine" "proxy" {
     ignore_changes = ["disk.0","disk.1"]                                                                                                       
   }
   
-  count            = "${var.proxy["nodes"]}"
+  #count            = "${var.proxy["nodes"]}"
+  count            = "${trimspace(var.proxy["ipaddresses"]) == "" ? 0 : length(split(",",var.proxy["ipaddresses"]))}"  
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
   datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (index(var.vm_types, "proxy") + count.index ) % length(var.datastore))}"
@@ -241,7 +248,8 @@ resource "vsphere_virtual_machine" "management" {
     ignore_changes = ["disk.0","disk.1"]                                                                                                       
   }
 
-  count            = "${var.management["nodes"]}"
+  #count            = "${var.management["nodes"]}"
+  count            = "${trimspace(var.management["ipaddresses"]) == "" ? 0 : length(split(",",var.management["ipaddresses"]))}"  
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
   datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (index(var.vm_types, "management") + count.index ) % length(var.datastore))}"
@@ -321,7 +329,8 @@ resource "vsphere_virtual_machine" "worker" {
     ignore_changes = ["disk.0","disk.1"]                                                                                                       
   }
 
-  count            = "${var.worker["nodes"]}"
+  #count            = "${var.worker["nodes"]}"
+  count            = "${trimspace(var.worker["ipaddresses"]) == "" ? 0 : length(split(",",var.worker["ipaddresses"]))}"  
   name             = "${format("%s-%s-%01d", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
   resource_pool_id = "${data.vsphere_resource_pool.pool.id}"
   datastore_id     = "${element(data.vsphere_datastore.datastore.*.id, (index(var.vm_types, "worker") + count.index ) % length(var.datastore))}"
@@ -393,6 +402,15 @@ connection {
       "[ -f ~/id_rsa ] && mv ~/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa",
       "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh"
     ]
+  }
+
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "scp -i ${var.vm_private_key_file} ${local.ssh_options} ${path.module}/scripts/delete_worker.sh ${var.ssh_user}@${local.icp_boot_node_ip}:/tmp/delete_worker.sh"
+  }
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_worker.sh; /tmp/delete_worker.sh ${var.icp_version} ${self.default_ip_address}\""
   }
 }
 //gluster

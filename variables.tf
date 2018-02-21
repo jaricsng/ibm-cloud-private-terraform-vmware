@@ -56,6 +56,9 @@ variable vm_types {
     type = "list"
     default = ["master","proxy","management","worker","gluster"]
 }
+variable vm_private_key_file {
+    default="vmware-key"
+}
 ##### ICP Instance details ######
 variable "icp_version" {
     description = "ICP Version"
