@@ -73,12 +73,13 @@ data "template_file" "createfs_worker" {
 //locals
 locals {
   icp_boot_node_ip = "${vsphere_virtual_machine.master.0.default_ip_address}"
+  heketi_ip = "${vsphere_virtual_machine.gluster.0.default_ip_address}"
   ssh_options = "-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
 }
 //master
 resource "vsphere_virtual_machine" "master" {
   lifecycle {
-    ignore_changes = ["disk.0","disk.1","disk.2"]                                                                                                       
+    ignore_changes = ["disk.0","disk.1"]                                                                                                       
   }
 
   #count            = "${var.master["nodes"]}"
@@ -107,20 +108,20 @@ resource "vsphere_virtual_machine" "master" {
 
   disk {
     label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
-    #size             = "${var.master["kubelet_lv"] + var.master["docker_lv"] + var.master["registry_lv"] + var.master["etcd_lv"] + var.master["management_lv"] + 1}"
-    size             = "${var.master["kubelet_lv"] + var.master["registry_lv"] + var.master["etcd_lv"] + var.master["management_lv"] + 1}"
+    size             = "${var.master["kubelet_lv"] + var.master["docker_lv"] + var.master["registry_lv"] + var.master["etcd_lv"] + var.master["management_lv"] + 1}"
+    # size             = "${var.master["kubelet_lv"] + var.master["registry_lv"] + var.master["etcd_lv"] + var.master["management_lv"] + 1}"
     unit_number      = 1
     eagerly_scrub    = false
     thin_provisioned = false
   }
 
-  disk {
-    label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
-    size             = "${var.master["docker_lv"]}"
-    unit_number      = 2
-    eagerly_scrub    = false
-    thin_provisioned = false
-  }
+  # disk {
+  #   label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.master["name"]),count.index + 1) }"
+  #   size             = "${var.master["docker_lv"]}"
+  #   unit_number      = 2
+  #   eagerly_scrub    = false
+  #   thin_provisioned = false
+  # }
 
   clone {
     template_uuid = "${data.vsphere_virtual_machine.template.id}"
@@ -172,7 +173,7 @@ connection {
       "echo \"${tls_private_key.ssh.public_key_openssh}\" | tee -a $HOME/.ssh/authorized_keys && chmod 600 $HOME/.ssh/authorized_keys",
       "[ -f ~/id_rsa ] && mv ~/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa",
       "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh",
-      "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
+      # "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
       "chmod +x /tmp/disable_ssh_password.sh; sudo /tmp/disable_ssh_password.sh"
     ]
   }
@@ -180,7 +181,7 @@ connection {
 //proxy
 resource "vsphere_virtual_machine" "proxy" {
   lifecycle {
-    ignore_changes = ["disk.0","disk.1","disk.2"]                                                                                                       
+    ignore_changes = ["disk.0","disk.1"]                                                                                                       
   }
   
   #count            = "${var.proxy["nodes"]}"
@@ -209,20 +210,20 @@ resource "vsphere_virtual_machine" "proxy" {
 
   disk {
     label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
-    #size             = "${var.proxy["kubelet_lv"] + var.proxy["docker_lv"] + 1}"
-    size             = "${var.proxy["kubelet_lv"] + 1}"
+    size             = "${var.proxy["kubelet_lv"] + var.proxy["docker_lv"] + 1}"
+    # size             = "${var.proxy["kubelet_lv"] + 1}"
     unit_number      = 1
     eagerly_scrub    = false
     thin_provisioned = false
   }
 
-  disk {
-    label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
-    size             = "${var.proxy["docker_lv"]}"
-    unit_number      = 2
-    eagerly_scrub    = false
-    thin_provisioned = false
-  }
+  # disk {
+  #   label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.proxy["name"]),count.index + 1) }"
+  #   size             = "${var.proxy["docker_lv"]}"
+  #   unit_number      = 2
+  #   eagerly_scrub    = false
+  #   thin_provisioned = false
+  # }
 
   clone {
     template_uuid = "${data.vsphere_virtual_machine.template.id}"
@@ -269,7 +270,7 @@ connection {
       "echo \"${tls_private_key.ssh.public_key_openssh}\" | tee -a $HOME/.ssh/authorized_keys && chmod 600 $HOME/.ssh/authorized_keys",
       "[ -f ~/id_rsa ] && mv ~/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa",
       "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh",
-      "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
+      # "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
       "chmod +x /tmp/disable_ssh_password.sh; sudo /tmp/disable_ssh_password.sh"
     ]
   }
@@ -277,7 +278,7 @@ connection {
 //management
 resource "vsphere_virtual_machine" "management" {
   lifecycle {
-    ignore_changes = ["disk.0","disk.1","disk.2"]                                                                                                       
+    ignore_changes = ["disk.0","disk.1"]                                                                                                       
   }
 
   #count            = "${var.management["nodes"]}"
@@ -306,20 +307,20 @@ resource "vsphere_virtual_machine" "management" {
 
   disk {
     label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
-    #size             = "${var.management["kubelet_lv"] + var.management["docker_lv"] + var.management["management_lv"] + 1}"
-    size             = "${var.management["kubelet_lv"] + var.management["management_lv"] + 1}"
+    size             = "${var.management["kubelet_lv"] + var.management["docker_lv"] + var.management["management_lv"] + 1}"
+    # size             = "${var.management["kubelet_lv"] + var.management["management_lv"] + 1}"
     unit_number      = 1
     eagerly_scrub    = false
     thin_provisioned = false
   }
 
-  disk {
-    label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
-    size             = "${var.management["docker_lv"]}"
-    unit_number      = 2
-    eagerly_scrub    = false
-    thin_provisioned = false
-  }
+  # disk {
+  #   label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.management["name"]),count.index + 1) }"
+  #   size             = "${var.management["docker_lv"]}"
+  #   unit_number      = 2
+  #   eagerly_scrub    = false
+  #   thin_provisioned = false
+  # }
 
   clone {
     template_uuid = "${data.vsphere_virtual_machine.template.id}"
@@ -366,7 +367,7 @@ provisioner "remote-exec" {
       "echo \"${tls_private_key.ssh.public_key_openssh}\" | tee -a $HOME/.ssh/authorized_keys && chmod 600 $HOME/.ssh/authorized_keys",
       "[ -f ~/id_rsa ] && mv ~/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa",
       "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh",
-      "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
+      # "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
       "chmod +x /tmp/disable_ssh_password.sh; sudo /tmp/disable_ssh_password.sh"
     ]
   }
@@ -374,7 +375,7 @@ provisioner "remote-exec" {
 //worker
 resource "vsphere_virtual_machine" "worker" {
   lifecycle {
-    ignore_changes = ["disk.0","disk.1","disk.2"]                                                                                                       
+    ignore_changes = ["disk.0","disk.1"]                                                                                                       
   }
 
   #count            = "${var.worker["nodes"]}"
@@ -403,20 +404,20 @@ resource "vsphere_virtual_machine" "worker" {
 
   disk {
     label            = "${format("%s-%s-%01d_1.vmdk", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
-    #size             = "${var.worker["kubelet_lv"] + var.worker["docker_lv"] + 1}"
-    size             = "${var.worker["kubelet_lv"] + 1}"
+    size             = "${var.worker["kubelet_lv"] + var.worker["docker_lv"] + 1}"
+    # size             = "${var.worker["kubelet_lv"] + 1}"
     unit_number      = 1
     eagerly_scrub    = false
     thin_provisioned = false
   }
 
-  disk {
-    label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
-    size             = "${var.worker["docker_lv"]}"
-    unit_number      = 2
-    eagerly_scrub    = false
-    thin_provisioned = false
-  }
+  # disk {
+  #   label            = "${format("%s-%s-%01d_2.vmdk", lower(var.instance_prefix), lower(var.worker["name"]),count.index + 1) }"
+  #   size             = "${var.worker["docker_lv"]}"
+  #   unit_number      = 2
+  #   eagerly_scrub    = false
+  #   thin_provisioned = false
+  # }
 
   clone {
     template_uuid = "${data.vsphere_virtual_machine.template.id}"
@@ -463,14 +464,14 @@ connection {
       "echo \"${tls_private_key.ssh.public_key_openssh}\" | tee -a $HOME/.ssh/authorized_keys && chmod 600 $HOME/.ssh/authorized_keys",
       "[ -f ~/id_rsa ] && mv ~/id_rsa $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa",
       "chmod +x /tmp/createfs.sh; sudo /tmp/createfs.sh",
-      "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
+      # "chmod +x /tmp/createfs_docker.sh; sudo /tmp/createfs_docker.sh ${lookup(var.storage_driver,var.osfamily)}",
       "chmod +x /tmp/disable_ssh_password.sh; sudo /tmp/disable_ssh_password.sh"
     ]
   }
 
   provisioner "local-exec" {
     when    = "destroy"
-    command = "scp -i ${var.vm_private_key_file} ${local.ssh_options} ${path.module}/lib/boot-scripts/delete_worker.sh ${var.ssh_user}@${local.icp_boot_node_ip}:/tmp/delete_worker.sh"
+    command = "scp -i ${var.vm_private_key_file} ${local.ssh_options} ${path.module}/lib/destroy/delete_worker.sh ${var.ssh_user}@${local.icp_boot_node_ip}:/tmp/"
   }
   provisioner "local-exec" {
     when    = "destroy"
@@ -551,6 +552,14 @@ resource "vsphere_virtual_machine" "gluster" {
       "echo \"${tls_private_key.ssh.public_key_openssh}\" | sudo tee -a /root/.ssh/authorized_keys && sudo chmod 600 /root/.ssh/authorized_keys"
     ]
   }
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "scp -i ${var.vm_private_key_file} ${local.ssh_options} ${path.module}/lib/destroy/delete_gluster.sh ${var.ssh_user}@${local.heketi_ip}:/tmp/"
+  }
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.heketi_ip} \"chmod +x /tmp/delete_gluster.sh; /tmp/delete_gluster.sh ${self.default_ip_address}\"; echo done"
+  }  
 }
 //spawn ICP Installation
 module "icpprovision" {
