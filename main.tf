@@ -563,7 +563,7 @@ resource "vsphere_virtual_machine" "gluster" {
 }
 //spawn ICP Installation
 module "icpprovision" {
-  source = "github.com/pjgunadi/terraform-module-icp-deploy?ref=test"
+  source = "github.com/pjgunadi/terraform-module-icp-deploy"
   //Connection IPs
   icp-ips = "${concat(vsphere_virtual_machine.master.*.default_ip_address, vsphere_virtual_machine.proxy.*.default_ip_address, vsphere_virtual_machine.management.*.default_ip_address, vsphere_virtual_machine.worker.*.default_ip_address)}"
   boot-node = "${element(vsphere_virtual_machine.master.*.default_ip_address, 0)}"
