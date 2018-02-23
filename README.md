@@ -22,9 +22,9 @@ Before deploying ICP in your vSphere Cluster environment, verify the following c
 1. Clone this repository: `git clone https://github.com/pjgunadi/ibm-cloud-private-terraform-vmware.git`
 2. [Download terraform](https://www.terraform.io/) if you don't have one
 3. Rename [terraform_tfvars.sample](terraform_tfvars.sample) file as `terraform.tfvars` and update the input values as needed. 
-4. Initialize Terraform
+4. Initialize Terraform to download and update the dependencies
 ```
-terraform init
+terraform init -upgrade
 ```
 5. Review Terraform plan
 ```
