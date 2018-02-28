@@ -34,7 +34,7 @@ resource "tls_private_key" "ssh" {
   algorithm = "RSA"
 
   provisioner "local-exec" {
-    command = "cat > ${var.vm_private_key_file} <<EOL\n${tls_private_key.ssh.private_key_pem}\nEOL"
+    command = "cat > ${var.vm_private_key_file} <<EOL\n${tls_private_key.ssh.private_key_pem}\nEOL && chmod 600 ${var.vm_private_key_file}"
   }
 }
 //Script template
