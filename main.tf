@@ -34,8 +34,11 @@ resource "tls_private_key" "ssh" {
   algorithm = "RSA"
 
   provisioner "local-exec" {
-    command = "cat > ${var.vm_private_key_file} <<EOL\n${tls_private_key.ssh.private_key_pem}\nEOL && chmod 600 ${var.vm_private_key_file}"
+    command = "cat > ${var.vm_private_key_file} <<EOL\n${tls_private_key.ssh.private_key_pem}\nEOL"
   }
+  provisioner "local-exec" {
+    command = "chmod 600 ${var.key_pair_name}"
+  }  
 }
 //Script template
 data "template_file" "createfs_master" {
