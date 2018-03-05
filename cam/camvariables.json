@@ -1,0 +1,342 @@
+[
+  {
+    "name": "datacenter",
+    "label": "Data Center",
+    "description": "VMware Data Center",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "string"
+  },  
+  {
+    "name": "datastore",
+    "label": "Datastore",
+    "description": "vSphere Datastore",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "list"
+  },
+  {
+    "name": "resource_pool",
+    "label": "Resource Pool",
+    "description": "Use <clustername>/Resources for default resource pool in a Cluster",
+    "default": "Cluster01/Resources",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "string"
+  },  
+  {
+    "name": "network",
+    "label": "Network Name",
+    "description": "Standard Network or Distributed Network Switch Name",
+    "default": "VM Network",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "string"
+  },  
+  {
+    "name": "osfamily",
+    "label": "Operating System",
+    "description": "Select supported ICP Operating System",
+    "default": "ubuntu",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "string",
+    "options": [
+      {
+        "value": "ubuntu",
+        "label": "Ubuntu"
+      },
+      {
+          "value": "redhat",
+          "label": "Redhat"
+      }
+    ]
+  },  
+  {
+    "name": "template",
+    "label": "Image Template",
+    "description": "Image Template name",
+    "default": {"ubuntu": "ubuntu1604_base", "redhat": "rhel74_base"},
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "map"
+  },  
+  {
+    "name": "ssh_user",
+    "label": "Template Login Username",
+    "description": "User name in selected template",
+    "default": "ubuntu",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "ssh_password",
+    "label": "Template Password",
+    "description": "Password in selected template",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": true,
+    "type": "string"
+  },
+  {
+    "name": "vm_private_key_file",
+    "label": "VM Private Key Filename",
+    "description": "VM Private Key filename to be saved on local",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": true,
+    "type": "string"
+  },  
+  {
+    "name": "vm_domain",
+    "label": "Domain",
+    "description": "ICP Cluster domain name",
+    "default": "icp.demo",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "timezone",
+    "label": "Time Zone",
+    "description": "Time Zone",
+    "default": "Asia/Singapore",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "dns_list",
+    "label": "DNS List",
+    "description": "DNS List",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "list"
+  },
+  {
+    "name": "icp_version",
+    "label": "ICP Version",
+    "description": "ICP Version",
+    "default": "2.1.0.1",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "string",
+    "options": [
+      {
+        "value": "2.1.0.1",
+        "label": "2.1.0.1"
+      },
+      {
+          "value": "2.1.0.1-ee",
+          "label": "2.1.0.1-ee"
+      }
+    ]
+  },
+  {
+    "name": "icp_source_server",
+    "label": "ICP Source Server",
+    "description": "Installer Source Server",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "icp_source_user",
+    "label": "ICP Source Username",
+    "description": "Installer Source Username",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "icp_source_password",
+    "label": "ICP Source Password",
+    "description": "Installer Source Password",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": true,
+    "type": "string"
+  },
+  {
+    "name": "icp_source_path",
+    "label": "ICP Source Path",
+    "description": "Installer Source Path",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "icpadmin_password",
+    "label": "ICP admin password",
+    "description": "Password for ICP admin",
+    "default": "admin",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": true,
+    "type": "string"
+  },
+  {
+    "name": "instance_prefix",
+    "label": "Hostname Prefix",
+    "description": "Type prefix to hostname",
+    "default": "icp",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "cluster_vip",
+    "label": "Cluster Virtual IP",
+    "description": "Cluster Virtual IP",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "cluster_vip_iface",
+    "label": "Cluster Virtual IP Interface",
+    "description": "Cluster Virtual IP Interface Name",
+    "default": "ens160",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "proxy_vip",
+    "label": "Proxy Virtual IP",
+    "description": "Proxy Virtual IP",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },  
+  {
+    "name": "proxy_vip_iface",
+    "label": "Proxy Virtual IP Interface",
+    "description": "Proxy Virtual IP Interface Name",
+    "default": "ens160",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "cluster_name",
+    "label": "ICP Cluster Name",
+    "description": "ICP Cluster Name",
+    "default": "mycluster",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "install_gluster",
+    "label": "Install Gluster",
+    "description": "Install Gluster",
+    "default": "true",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "boolean"
+  },   
+  {
+    "name": "master",
+    "label": "Master Node",
+    "description": "Master Node Informations",
+    "default": {"nodes": "1", "name": "master", "cpu_cores": "8", "kubelet_lv":"10","docker_lv":"50","etcd_lv":"4","registry_lv":"15","management_lv":"20","memory":"8192","ipaddresses":"192.168.66.81","netmask":"21","gateway":"192.168.64.1" },
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "map"
+  },
+  {
+      "name": "proxy",
+      "label": "Proxy Node",
+      "description": "Proxy Node Informations",
+      "default": {"nodes": "1", "name": "proxy", "cpu_cores": "2", "kubelet_lv":"10","docker_lv":"39","memory":"4096","ipaddresses":"192.168.66.84","netmask":"21","gateway":"192.168.64.1" },
+      "hidden": false,
+      "immutable": false,
+      "required": true,
+      "secured": false,
+      "type": "map"
+  },
+  {
+      "name": "management",
+      "label": "Management Node",
+      "description": "Management Node Informations",
+      "default": {"nodes": "1", "name": "mgmt", "cpu_cores": "8", "kubelet_lv":"10","docker_lv":"40","management_lv":"49","memory":"8192","ipaddresses":"192.168.66.87","netmask":"21","gateway":"192.168.64.1" },
+      "hidden": false,
+      "immutable": false,
+      "required": true,
+      "secured": false,
+      "type": "map"
+  },
+  {
+      "name": "worker",
+      "label": "Worker Node",
+      "description": "Worker Node Informations",
+      "default": {"nodes": "3", "name": "worker", "cpu_cores": "8", "kubelet_lv":"10","docker_lv":"89","memory":"8192","ipaddresses":"192.168.66.90 192.168.66.91 192.168.66.92","netmask":"21","gateway":"192.168.64.1" },
+      "hidden": false,
+      "immutable": false,
+      "required": true,
+      "secured": false,
+      "type": "map"
+  },
+  {
+    "name": "gluster",
+    "label": "Gluster Node",
+    "description": "Gluster Node Informations",
+    "default": {"nodes": "3", "name": "gluster", "cpu_cores": "2", "data_disk":"100","memory":"2048","ipaddresses":"192.168.66.95 192.168.66.96 192.168.66.97","netmask":"21","gateway":"192.168.64.1" },
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "map"
+}  
+]
+  
