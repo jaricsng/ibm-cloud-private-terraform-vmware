@@ -98,6 +98,7 @@
     "name": "vm_private_key_file",
     "label": "VM Private Key Filename",
     "description": "VM Private Key filename to be saved on local",
+    "default": "vmware-key",
     "hidden": false,
     "immutable": false,
     "required": true,
@@ -201,7 +202,6 @@
     "name": "icpadmin_password",
     "label": "ICP admin password",
     "description": "Password for ICP admin",
-    "default": "admin",
     "hidden": false,
     "immutable": false,
     "required": true,
@@ -268,7 +268,7 @@
     "default": "mycluster",
     "hidden": false,
     "immutable": false,
-    "required": false,
+    "required": true,
     "secured": false,
     "type": "string"
   },
@@ -279,7 +279,7 @@
     "default": "true",
     "hidden": false,
     "immutable": false,
-    "required": false,
+    "required": true,
     "secured": false,
     "type": "boolean"
   },   
