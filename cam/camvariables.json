@@ -284,10 +284,31 @@
     "type": "boolean"
   },   
   {
+    "name": "gluster_volume_type",
+    "label": "Gluster Volume Type",
+    "description": "Gluster Volume Type",
+    "default": "none",
+    "hidden": false,
+    "immutable": false,
+    "required": false,
+    "secured": false,
+    "type": "string"
+  },
+  {
+    "name": "heketi_admin_pwd",
+    "label": "Heketi Admin Password",
+    "description": "Heketi Admin Password",
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": true,
+    "type": "string"
+  },       
+  {
     "name": "master",
     "label": "Master Node",
     "description": "Master Node Informations",
-    "default": {"nodes": "1", "name": "master", "cpu_cores": "8", "kubelet_lv":"10","docker_lv":"50","etcd_lv":"4","registry_lv":"15","management_lv":"20","memory":"8192","ipaddresses":"192.168.66.81","netmask":"21","gateway":"192.168.64.1" },
+    "default": {"nodes": "1", "name": "master", "cpu_cores": "4", "kubelet_lv":"10","docker_lv":"50","etcd_lv":"4","registry_lv":"35","management_lv":"100","memory":"8192","ipaddresses":"192.168.66.81","netmask":"21","gateway":"192.168.64.1" },
     "hidden": false,
     "immutable": false,
     "required": true,
@@ -309,13 +330,24 @@
       "name": "management",
       "label": "Management Node",
       "description": "Management Node Informations",
-      "default": {"nodes": "1", "name": "mgmt", "cpu_cores": "8", "kubelet_lv":"10","docker_lv":"40","management_lv":"49","memory":"8192","ipaddresses":"192.168.66.87","netmask":"21","gateway":"192.168.64.1" },
+      "default": {"nodes": "1", "name": "mgmt", "cpu_cores": "4", "kubelet_lv":"10","docker_lv":"39","management_lv":"100","memory":"8192","ipaddresses":"192.168.66.87","netmask":"21","gateway":"192.168.64.1" },
       "hidden": false,
       "immutable": false,
       "required": true,
       "secured": false,
       "type": "map"
   },
+  {
+    "name": "va",
+    "label": "VA Node",
+    "description": "VA Node Informations",
+    "default": {"nodes": "1", "name": "va", "cpu_cores": "4", "kubelet_lv":"10","docker_lv":"39","va_lv":"100","memory":"8192","ipaddresses":"192.168.66.89","netmask":"21","gateway":"192.168.64.1" },
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "map"
+  },  
   {
       "name": "worker",
       "label": "Worker Node",
@@ -337,6 +369,6 @@
     "required": true,
     "secured": false,
     "type": "map"
-}  
+  }  
 ]
   
