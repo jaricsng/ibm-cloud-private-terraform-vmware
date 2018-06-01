@@ -89,7 +89,7 @@ variable vm_private_key_file {
 ##### ICP Instance details ######
 variable "icp_version" {
   description = "ICP Version"
-  default     = "2.1.0.1"
+  default     = "2.1.0.3"
 }
 
 variable icp_source_server {
@@ -150,7 +150,7 @@ variable "cluster_name" {
 }
 
 variable "disable_management" {
-  default = ["va"]
+  default = ["istio", "custom-metrics-adapter"]
 }
 
 variable "gluster_volume_type" {

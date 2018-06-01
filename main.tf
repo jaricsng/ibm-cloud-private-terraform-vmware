@@ -765,7 +765,7 @@ module "icpprovision" {
     "calico_ipip_enabled"          = "true"
     "docker_log_max_size"          = "10m"
     "docker_log_max_file"          = "10"
-    "disabled_management_services" = ["${split(",",var.va["nodes"] != 0 ? "" : join(",",var.disable_management))}"]
+    "disabled_management_services" = ["${split(",",var.va["nodes"] != 0 ? join(",",var.disable_management) : join(",",concat(list("vulnerability-advisor"),var.disable_management)))}"]
     "cluster_vip"                  = "${var.cluster_vip == "" ? element(vsphere_virtual_machine.master.*.default_ip_address, 0) : var.cluster_vip}"
     "vip_iface"                    = "${var.cluster_vip_iface == "" ? "eth0" : var.cluster_vip_iface}"
     "proxy_vip"                    = "${var.proxy_vip == "" ? element(split(",",var.proxy["nodes"] == 0 ? join(",",vsphere_virtual_machine.master.*.default_ip_address) : join(",",vsphere_virtual_machine.proxy.*.default_ip_address)), 0) : var.proxy_vip}"

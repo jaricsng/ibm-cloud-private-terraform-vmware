@@ -141,7 +141,7 @@
     "name": "icp_version",
     "label": "ICP Version",
     "description": "ICP Version",
-    "default": "2.1.0.1",
+    "default": "2.1.0.3",
     "hidden": false,
     "immutable": false,
     "required": true,
@@ -149,12 +149,12 @@
     "type": "string",
     "options": [
       {
-        "value": "2.1.0.1",
-        "label": "2.1.0.1"
+        "value": "2.1.0.3",
+        "label": "2.1.0.3"
       },
       {
-          "value": "2.1.0.1-ee",
-          "label": "2.1.0.1-ee"
+          "value": "2.1.0.3-ee",
+          "label": "2.1.0.3-ee"
       }
     ]
   },
@@ -304,6 +304,17 @@
     "secured": true,
     "type": "string"
   },       
+  {
+    "name": "disable_management",
+    "label": "Disable Management",
+    "description": "Disable Management Service",
+    "default": ["istio", "custom-metrics-adapter"],
+    "hidden": false,
+    "immutable": false,
+    "required": true,
+    "secured": false,
+    "type": "list"
+  },    
   {
     "name": "master",
     "label": "Master Node",

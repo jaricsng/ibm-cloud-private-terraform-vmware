@@ -34,6 +34,7 @@ instance_prefix="icp"                           #VM Instance name prefix
 install_gluster=true                            #Option to install GlusterFS
 gluster_volume_type = "none"                    #Gluster Volume Type. Sample: none, replicate:3, disperse:4:2
 heketi_admin_pwd = "your-password"              #Heketi API admin password
+disable_management = ["istio", "custom-metrics-adapter"] #Default Disabled management component v2.1.0.3
 master= {                                       #VM Specification for ICP Master node
     nodes       = "1"
     name        = "master"
