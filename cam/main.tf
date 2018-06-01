@@ -148,7 +148,7 @@ resource "vsphere_virtual_machine" "master" {
       }
 
       network_interface {
-        ipv4_address = "${trimspace(element(split(",",var.master["ipaddresses"]),count.index))}"
+        ipv4_address = "${trimspace(element(split(" ",var.master["ipaddresses"]),count.index))}"
         ipv4_netmask = "${var.master["netmask"]}"
       }
 
@@ -240,7 +240,7 @@ resource "vsphere_virtual_machine" "proxy" {
       }
 
       network_interface {
-        ipv4_address = "${trimspace(element(split(",",var.proxy["ipaddresses"]),count.index))}"
+        ipv4_address = "${trimspace(element(split(" ",var.proxy["ipaddresses"]),count.index))}"
         ipv4_netmask = "${var.proxy["netmask"]}"
       }
 
@@ -347,7 +347,7 @@ resource "vsphere_virtual_machine" "management" {
       }
 
       network_interface {
-        ipv4_address = "${trimspace(element(split(",",var.management["ipaddresses"]),count.index))}"
+        ipv4_address = "${trimspace(element(split(" ",var.management["ipaddresses"]),count.index))}"
         ipv4_netmask = "${var.management["netmask"]}"
       }
 
@@ -454,7 +454,7 @@ resource "vsphere_virtual_machine" "va" {
       }
 
       network_interface {
-        ipv4_address = "${trimspace(element(split(",",var.va["ipaddresses"]),count.index))}"
+        ipv4_address = "${trimspace(element(split(" ",var.va["ipaddresses"]),count.index))}"
         ipv4_netmask = "${var.va["netmask"]}"
       }
 
@@ -541,7 +541,7 @@ resource "vsphere_virtual_machine" "worker" {
       }
 
       network_interface {
-        ipv4_address = "${trimspace(element(split(",",var.worker["ipaddresses"]),count.index))}"
+        ipv4_address = "${trimspace(element(split(" ",var.worker["ipaddresses"]),count.index))}"
         ipv4_netmask = "${var.worker["netmask"]}"
       }
 
@@ -648,7 +648,7 @@ resource "vsphere_virtual_machine" "gluster" {
       }
 
       network_interface {
-        ipv4_address = "${trimspace(element(split(",",var.gluster["ipaddresses"]),count.index))}"
+        ipv4_address = "${trimspace(element(split(" ",var.gluster["ipaddresses"]),count.index))}"
         ipv4_netmask = "${var.gluster["netmask"]}"
       }
 
