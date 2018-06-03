@@ -1,14 +1,14 @@
-variable vsphere_user {
-  description = "vCenter user"
-}
+# variable vsphere_user {
+#   description = "vCenter user"
+# }
 
-variable vsphere_password {
-  description = "vCenter password"
-}
+# variable vsphere_password {
+#   description = "vCenter password"
+# }
 
-variable vsphere_server {
-  description = "vCenter server"
-}
+# variable vsphere_server {
+#   description = "vCenter server"
+# }
 
 variable datacenter {
   description = "vCenter Datacenter"
