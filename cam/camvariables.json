@@ -11,10 +11,6 @@
       "label": "SSH Keys"
     },
     {
-      "name": "virtualmachine",
-      "label": "Virtual Machine Input Variables"
-    },
-    {
       "name": "image_parameters",
       "label": "Image Parameters"
     },
@@ -159,7 +155,7 @@
     "required": true,
     "secured": false,
     "type": "string",
-    "group_name": "virtualmachine"
+    "group_name": "image_parameters"
   },
   {
     "name": "timezone",
@@ -171,7 +167,7 @@
     "required": true,
     "secured": false,
     "type": "string",
-    "group_name": "virtualmachine"
+    "group_name": "image_parameters"
   },
   {
     "name": "dns_list",
@@ -182,7 +178,7 @@
     "required": true,
     "secured": false,
     "type": "list",
-    "group_name": "virtualmachine"
+    "group_name": "image_parameters"
   },
   {
     "name": "icp_source_server",
