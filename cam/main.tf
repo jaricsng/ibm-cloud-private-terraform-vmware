@@ -770,7 +770,8 @@ module "icpprovision" {
     "vip_iface"                    = "${var.cluster_vip_iface == "" ? "eth0" : var.cluster_vip_iface}"
     "proxy_vip"                    = "${var.proxy_vip == "" ? element(split(",",var.proxy["nodes"] == 0 ? join(",",vsphere_virtual_machine.master.*.default_ip_address) : join(",",vsphere_virtual_machine.proxy.*.default_ip_address)), 0) : var.proxy_vip}"
     "proxy_vip_iface"              = "${var.proxy_vip_iface == "" ? "eth0" : var.proxy_vip_iface}"
-    "kibana_install"               = "${var.kibana_install}"
+
+    #"kibana_install"               = "${var.kibana_install}"
 
     #"cluster_access_ip"         = "${vsphere_virtual_machine.master.0.default_ip_address}"
     #"proxy_access_ip"           = "${vsphere_virtual_machine.proxy.0.default_ip_address}"
