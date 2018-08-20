@@ -141,7 +141,7 @@
     "hidden": false,
     "immutable": false,
     "required": true,
-    "secured": true,
+    "secured": false,
     "type": "string",
     "group_name": "ssh_keys"
   },  
