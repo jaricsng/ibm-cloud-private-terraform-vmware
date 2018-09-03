@@ -54,4 +54,4 @@ docker run -e LICENSE=accept --net=host -v "$ICPDIR":/installer/cluster $org/$re
 $kubectl delete node $ip
 sudo sed -i "/^$ip.*$/d" /etc/hosts
 sudo sed -i "/^$ip.*$/d" /opt/ibm/cluster/hosts
-sed -i-$(date +%Y%m%dT%H%M%S) 's/192.168.64.206//;s/,*$//;s/,,/,/;s/^,//' $NODELIST
+sed -i-$(date +%Y%m%dT%H%M%S) "s/$ip//;s/,*$//;s/,,/,/;s/^,//" $NODELIST
