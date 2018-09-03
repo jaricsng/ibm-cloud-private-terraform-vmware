@@ -295,7 +295,7 @@ resource "vsphere_virtual_machine" "proxy" {
 
   provisioner "local-exec" {
     when    = "destroy"
-    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_node.sh; /tmp/delete_node.sh ${var.icp_version} ${self.default_ip_address}\"; echo done"
+    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_node.sh; /tmp/delete_node.sh ${var.icp_version} ${self.default_ip_address} proxy\"; echo done"
   }
 }
 
@@ -402,7 +402,7 @@ resource "vsphere_virtual_machine" "management" {
 
   provisioner "local-exec" {
     when    = "destroy"
-    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_node.sh; /tmp/delete_node.sh ${var.icp_version} ${self.default_ip_address}\"; echo done"
+    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_node.sh; /tmp/delete_node.sh ${var.icp_version} ${self.default_ip_address} management\"; echo done"
   }
 }
 
@@ -596,7 +596,7 @@ resource "vsphere_virtual_machine" "worker" {
 
   provisioner "local-exec" {
     when    = "destroy"
-    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_node.sh; /tmp/delete_node.sh ${var.icp_version} ${self.default_ip_address}\"; echo done"
+    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_node.sh; /tmp/delete_node.sh ${var.icp_version} ${self.default_ip_address} worker\"; echo done"
   }
 }
 
