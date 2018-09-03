@@ -778,7 +778,6 @@ module "icpprovision" {
   }
 
   #Gluster
-  #Gluster and Heketi nodes are set to worker nodes for demo. Use separate nodes for production
   install_gluster = "${var.install_gluster}"
 
   gluster_size        = "${var.gluster["nodes"]}"
