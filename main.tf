@@ -725,8 +725,7 @@ resource "null_resource" "copy_delete_gluster" {
 
 //spawn ICP Installation
 module "icpprovision" {
-  #source = "github.com/pjgunadi/terraform-module-icp-deploy"
-  source = "github.com/pjgunadi/terraform-module-icp-deploy?ref=2.1.0.3"
+  source = "github.com/pjgunadi/terraform-module-icp-deploy?ref=3.1.0"
 
   //Connection IPs
   #icp-ips   = "${concat(vsphere_virtual_machine.master.*.default_ip_address, vsphere_virtual_machine.proxy.*.default_ip_address, vsphere_virtual_machine.management.*.default_ip_address, vsphere_virtual_machine.va.*.default_ip_address, vsphere_virtual_machine.worker.*.default_ip_address)}"
@@ -773,9 +772,7 @@ module "icpprovision" {
 
     #"kibana_install"               = "${var.kibana_install}"
 
-    #"cluster_access_ip"         = "${vsphere_virtual_machine.master.0.default_ip_address}"
-    #"proxy_access_ip"           = "${vsphere_virtual_machine.proxy.0.default_ip_address}"
-  }
+ }
 
   #Gluster
   install_gluster = "${var.install_gluster}"
