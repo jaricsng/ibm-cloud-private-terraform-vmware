@@ -491,6 +491,26 @@ resource "vsphere_virtual_machine" "va" {
       "chmod +x /tmp/disable_ssh_password.sh; sudo /tmp/disable_ssh_password.sh",
     ]
   }
+
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "cat > ${var.vm_private_key_file} <<EOL\n${tls_private_key.ssh.private_key_pem}\nEOL"
+  }
+
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "chmod 600 ${var.vm_private_key_file}"
+  }
+
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "scp -i ${var.vm_private_key_file} ${local.ssh_options} ${path.module}/lib/destroy/delete_node.sh ${var.ssh_user}@${local.icp_boot_node_ip}:/tmp/"
+  }
+
+  provisioner "local-exec" {
+    when    = "destroy"
+    command = "ssh -i ${var.vm_private_key_file} ${local.ssh_options} ${var.ssh_user}@${local.icp_boot_node_ip} \"chmod +x /tmp/delete_node.sh; /tmp/delete_node.sh ${var.icp_version} ${self.default_ip_address} va\"; echo done"
+  }
 }
 
 //worker
