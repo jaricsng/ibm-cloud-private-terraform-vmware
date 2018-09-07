@@ -781,19 +781,23 @@ module "icpprovision" {
     "ansible_user"                 = "${var.ssh_user}"
     "ansible_become"               = "${var.ssh_user == "root" ? false : true}"
     "default_admin_password"       = "${var.icpadmin_password}"
-    "calico_ipip_enabled"          = "true"
-    "docker_log_max_size"          = "10m"
+    #"calico_ipip_enabled"          = "true"
+    "docker_log_max_size"          = "100m"
     "docker_log_max_file"          = "10"
-    "disabled_management_services" = ["${split(",",var.va["nodes"] != 0 ? join(",",var.disable_management) : join(",",concat(list("vulnerability-advisor"),var.disable_management)))}"]
+    #"disabled_management_services" = ["${split(",",var.va["nodes"] != 0 ? join(",",var.disable_management) : join(",",concat(list("vulnerability-advisor"),var.disable_management)))}"]
     "cluster_vip"                  = "${var.cluster_vip == "" ? element(vsphere_virtual_machine.master.*.default_ip_address, 0) : var.cluster_vip}"
     "vip_iface"                    = "${var.cluster_vip_iface == "" ? "eth0" : var.cluster_vip_iface}"
     "proxy_vip"                    = "${var.proxy_vip == "" ? element(split(",",var.proxy["nodes"] == 0 ? join(",",vsphere_virtual_machine.master.*.default_ip_address) : join(",",vsphere_virtual_machine.proxy.*.default_ip_address)), 0) : var.proxy_vip}"
     "proxy_vip_iface"              = "${var.proxy_vip_iface == "" ? "eth0" : var.proxy_vip_iface}"
 
+    "management_services" = {
+      "istio" = "${var.management_services["istio"]}"
+      "vulnerability-advisor" = "${var.va["nodes"] != 0 ? var.management_services["vulnerability-advisor"] : "disabled"}"
+      "storage-glusterfs" = "${var.management_services["storage-glusterfs"]}"
+      "storage-minio" = "${var.management_services["storage-minio"]}"
+    }
     #"kibana_install"               = "${var.kibana_install}"
 
-    #"cluster_access_ip"         = "${vsphere_virtual_machine.master.0.default_ip_address}"
-    #"proxy_access_ip"           = "${vsphere_virtual_machine.proxy.0.default_ip_address}"
   }
 
   #Gluster
